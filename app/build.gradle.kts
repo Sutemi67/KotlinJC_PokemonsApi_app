@@ -58,15 +58,11 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-
     //Koin
     implementation(libs.koin.androidx.compose)
     implementation(libs.koin.androidx.compose.navigation)
     implementation(libs.koin.ktor)
     testImplementation(libs.koin.test.junit4)
-
-    // WorkManager
-    implementation(libs.androidx.work.runtime.ktx)
 
     //Navigation
     implementation(libs.androidx.navigation.compose)
@@ -84,4 +80,8 @@ dependencies {
 
     //Gson
     implementation(libs.gson)
+
+    //Coil
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
 }

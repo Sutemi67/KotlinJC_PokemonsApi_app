@@ -22,7 +22,14 @@ fun PokemonsApp(
         viewModel.fetchPokemon()
     }
     Scaffold(
-        topBar = { AppTopBar() },
+        topBar = {
+            AppTopBar(
+                onBackButtonPressed = {},
+                isBackButtonNeeded = false,
+                onFilterPressed = {},
+                onValueChange = { searchText -> viewModel.newSearchText(searchText) }
+            )
+        },
         bottomBar = {}
     ) { innerPadding ->
         NavHost(

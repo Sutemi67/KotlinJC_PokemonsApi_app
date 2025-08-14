@@ -1,8 +1,9 @@
 package apc.appcradle.pokemonstest.domain
 
-import apc.appcradle.pokemonstest.domain.models.Pokemon
-import apc.appcradle.pokemonstest.domain.models.PokemonListResponse
+import apc.appcradle.pokemonstest.domain.models.PokemonWithImage
 
 interface LocalRepository {
-    suspend fun fetchPokemonList(): List<Pokemon>
+    suspend fun fetchPokemonList(): List<PokemonWithImage>
+    suspend fun filterList(searchText: String): List<PokemonWithImage>
+    fun getUnfilteredList():List<PokemonWithImage>
 }
