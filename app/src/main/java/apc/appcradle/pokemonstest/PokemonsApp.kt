@@ -27,7 +27,7 @@ fun PokemonsApp(
                 onBackButtonPressed = {},
                 isBackButtonNeeded = false,
                 onFilterPressed = {},
-                onValueChange = { searchText -> viewModel.newSearchText(searchText) }
+                onValueChange = { searchText -> viewModel.onNewSearchTextEntered(searchText) }
             )
         },
         bottomBar = {}

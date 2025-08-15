@@ -13,8 +13,10 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.serialization.json.Json
 
 class NetworkClientImpl() : NetworkClient {
@@ -59,7 +61,7 @@ class NetworkClientImpl() : NetworkClient {
         } catch (e: Exception) {
             Log.e("data", "networkClient.fetch: Error fetching details: $e")
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
     override fun getImage(pokemon: Pokemon): Flow<String?> = flow {
         imageCache[pokemon.name]?.let { imageUrl ->
@@ -73,5 +75,5 @@ class NetworkClientImpl() : NetworkClient {
         } catch (e: Exception) {
             Log.e("data", "networkClient.getImage: Error fetching details for ${pokemon.name}: $e")
         }
-    }
+    }.flowOn(Dispatchers.IO)
 }

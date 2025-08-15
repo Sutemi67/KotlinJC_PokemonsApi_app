@@ -22,6 +22,16 @@ class ViewModel(
 
     private var searchJob: Job? = null
 
+    /*
+        init {
+        получаем все сохраненные настройки приложения, если таковые будем заводить в будущем
+            getAppThemeFromPreferences()
+
+        чек интернета и дальше от статуса работа с бд или апи
+            checkInternetConnectionState()
+        }
+    */
+
     fun fetchPokemon() {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
@@ -38,7 +48,7 @@ class ViewModel(
         }
     }
 
-    fun newSearchText(searchText: String?) {
+    fun onNewSearchTextEntered(searchText: String?) {
         searchJob?.cancel()
         if (searchText.isNullOrEmpty()) {
             _state.update {

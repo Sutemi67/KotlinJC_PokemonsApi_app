@@ -19,7 +19,28 @@ class MainActivity : ComponentActivity() {
             val viewModel = koinViewModel<ViewModel>()
             val state by viewModel.state.collectAsStateWithLifecycle()
 
-            PokemonsTestTheme {
+            /*
+            можем получить новую тему state.theme и вставить ниже
+            themeState = state.theme
+
+            *дальше логика выбора темы
+                 val theme = when(themeState){
+                 dark->true
+                 light->false
+                 system->isSystemDarkTheme(
+            }
+
+            Создание собственных шрифтов через композицию на основе масштабирования:
+
+            appTypeScale = state.scale
+            CompositionLocalProvider(LocalTypography provides typography)
+
+            Ну и всего остального прочего типа своей цветовой схемы
+             */
+
+            PokemonsTestTheme(
+                //darkTheme = theme
+            ) {
                 PokemonsApp(viewModel, state)
             }
         }
