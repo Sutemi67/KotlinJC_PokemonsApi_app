@@ -22,7 +22,8 @@ import kotlinx.serialization.json.Json
 class NetworkClientImpl() : NetworkClient {
 
     private val mainUrl = "https://pokeapi.co/api/v2"
-    private var currentOffset = 0
+
+    //    private var currentOffset = 0
     private var totalCount = 0
     private val pageSize: Int = 20
     private var isLastPage = false
@@ -35,17 +36,23 @@ class NetworkClientImpl() : NetworkClient {
         }
     }
 
-    override fun fetchPokemonList(): Flow<PokemonWithImage> = flow {
+    override fun fetchPokemonList(previousOffset: Int): Flow<PokemonWithImage> = flow {
         try {
             if (isLastPage) return@flow
+
+//            val trueOffset = max(previousOffset, currentOffset)
             val request = client.get("$mainUrl/pokemon") {
                 parameter("limit", pageSize)
-                parameter("offset", currentOffset)
+                parameter("offset", previousOffset)
             }
             val response: PokemonListResponse = request.body()
             totalCount = response.count
-            currentOffset += pageSize
-            isLastPage = currentOffset >= totalCount
+//            isLastPage = previousOffset >= totalCount
+
+            if (previousOffset >= totalCount) {
+                Log.d("data", "NetworkClient: достигнут конец списка (total: $totalCount)")
+                return@flow
+            }
 
             response.results.forEach { pokemon ->
                 getImage(pokemon).collect { imageUrl ->

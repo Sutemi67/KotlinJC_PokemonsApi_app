@@ -7,6 +7,6 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "pokemons")
 data class PokemonDAO(
     @PrimaryKey @ColumnInfo val name: String,
-    @ColumnInfo val image: String,
+    @ColumnInfo val imageUrl: String? = null,
     @ColumnInfo val personalUrl: String
 )

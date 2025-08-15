@@ -40,7 +40,8 @@ fun AppTopBar(
     isBackButtonNeeded: Boolean,
     onBackButtonPressed: () -> Unit,
     onFilterPressed: () -> Unit,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    onClearPressed: () -> Unit
 ) {
     var value by remember { mutableStateOf("") }
 
@@ -95,6 +96,15 @@ fun AppTopBar(
                                 contentDescription = "filter"
                             )
                         }
+                        IconButton(
+                            onClick = onClearPressed
+                        ) {
+                            Icon(
+                                modifier = Modifier.fillMaxHeight(),
+                                imageVector = Icons.Default.Clear,
+                                contentDescription = "filter"
+                            )
+                        }
                     }
                 }
             },
@@ -122,6 +132,7 @@ fun GreetingPreview() {
             isBackButtonNeeded = true,
             onBackButtonPressed = {},
             onFilterPressed = {},
-            onValueChange = {})
+            onValueChange = {},
+            onClearPressed = {})
     }
 }
