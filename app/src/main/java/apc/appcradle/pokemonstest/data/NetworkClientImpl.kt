@@ -23,7 +23,6 @@ class NetworkClientImpl() : NetworkClient {
 
     private val mainUrl = "https://pokeapi.co/api/v2"
 
-    //    private var currentOffset = 0
     private var totalCount = 0
     private val pageSize: Int = 20
     private var isLastPage = false
@@ -40,14 +39,12 @@ class NetworkClientImpl() : NetworkClient {
         try {
             if (isLastPage) return@flow
 
-//            val trueOffset = max(previousOffset, currentOffset)
             val request = client.get("$mainUrl/pokemon") {
                 parameter("limit", pageSize)
                 parameter("offset", previousOffset)
             }
             val response: PokemonListResponse = request.body()
             totalCount = response.count
-//            isLastPage = previousOffset >= totalCount
 
             if (previousOffset >= totalCount) {
                 Log.d("data", "NetworkClient: достигнут конец списка (total: $totalCount)")

@@ -65,7 +65,9 @@ class ViewModel(
             val dbList: List<PokemonWithImage>? =
                 withContext(Dispatchers.IO) { localRepository.readFromDb() }
             val currentListSize =
-                if (state.value.searchType == SearchType.Initial) 0 else state.value.list.size
+                if (state.value.searchType == SearchType.Initial) {
+                    dbList?.size ?: 0
+                } else state.value.list.size
 
             if (dbList.isNullOrEmpty() || state.value.searchType == SearchType.GetMore) {
                 Log.d("data", "viewmodel dblistsize: ${dbList?.size}")

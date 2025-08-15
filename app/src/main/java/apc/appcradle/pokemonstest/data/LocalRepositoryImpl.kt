@@ -51,7 +51,7 @@ class LocalRepositoryImpl(
     fun readFromDb(): List<PokemonWithImage> {
         val listOfDao = dao.getAll()
         val listOfPokemons = converter.convertToAppPokemons(listOfDao)
-//        previousList.addAll(listOfPokemons)
+        previousList = listOfPokemons.toMutableList()
         return listOfPokemons
     }
 
