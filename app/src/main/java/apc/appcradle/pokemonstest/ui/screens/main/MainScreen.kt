@@ -14,9 +14,15 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,19 +33,21 @@ import apc.appcradle.pokemonstest.ui.components.ListElementComposable
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     state: PokemonAppState,
     searchPokemons: () -> Unit,
+    onRefreshPull: () -> Unit
 ) {
     val gridState = rememberLazyGridState()
+    var refreshing by remember { mutableStateOf(false) }
 
     if (state.searchFilterText.isNullOrEmpty())
         LaunchedEffect(key1 = gridState, key2 = state) {
             snapshotFlow { gridState.layoutInfo }
                 .map { layoutInfo ->
                     val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()
-//                    lastVisibleItem?.index == layoutInfo.totalItemsCount - 1
                     val totalItems = layoutInfo.totalItemsCount
                     val lastVisibleIndex = lastVisibleItem?.index ?: 0
 
@@ -67,11 +75,14 @@ fun MainScreen(
             }
         }
     } else {
-        Box(
-            Modifier
+        // можно было вместо индикатора снизу настроить тут isRefreshing
+        PullToRefreshBox(
+            modifier = Modifier
                 .fillMaxSize()
                 .padding(10.dp),
-            contentAlignment = Alignment.TopCenter
+            contentAlignment = Alignment.TopCenter,
+            isRefreshing = refreshing,
+            onRefresh = onRefreshPull,
         ) {
             LazyVerticalGrid(
                 state = gridState,

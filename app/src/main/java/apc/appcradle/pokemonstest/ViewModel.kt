@@ -112,7 +112,6 @@ class ViewModel(
                     list = localRepository.getUnfilteredList()
                 )
             }
-//            Log.d("data", "viewmodel unfiltered list size: ${state.value.list.size}")
 
         } else {
             searchJob = viewModelScope.launch {
@@ -123,14 +122,20 @@ class ViewModel(
                         list = localRepository.filterList(searchText)
                     )
                 }
-//                Log.d("data", "viewmodel filtered list size: ${state.value.list.size}")
             }
         }
+    }
+
+    fun onRefreshPull() {
+        clearDb()
+        fetchPokemon()
     }
 
     override fun onCleared() {
         searchJob?.cancel()
         searchJob = null
+        fetchJob = null
+        writeToDbJob = null
         super.onCleared()
     }
 }
