@@ -13,9 +13,12 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.json.Json
 
 class NetworkClientImpl() : NetworkClient {
+
     private val mainUrl = "https://pokeapi.co/api/v2"
     private var currentOffset = 0
     private var totalCount = 0
@@ -30,9 +33,9 @@ class NetworkClientImpl() : NetworkClient {
         }
     }
 
-    override suspend fun fetchPokemonList(): List<PokemonWithImage> {
+    override fun fetchPokemonList(): Flow<PokemonWithImage> = flow {
         try {
-            if (isLastPage) return emptyList()
+            if (isLastPage) return@flow
             val request = client.get("$mainUrl/pokemon") {
                 parameter("limit", pageSize)
                 parameter("offset", currentOffset)
@@ -41,33 +44,34 @@ class NetworkClientImpl() : NetworkClient {
             totalCount = response.count
             currentOffset += pageSize
             isLastPage = currentOffset >= totalCount
-            val list = mutableListOf<PokemonWithImage>()
+
             response.results.forEach { pokemon ->
-                list.add(getImage(pokemon))
+                getImage(pokemon).collect { imageUrl ->
+                    emit(
+                        PokemonWithImage(
+                            name = pokemon.name,
+                            personalDataUrl = pokemon.url,
+                            imageUrl = imageUrl
+                        )
+                    )
+                }
             }
-            Log.d("data", "networkClient success:\n$list\n$pageSize\n$currentOffset")
-            return list
         } catch (e: Exception) {
-            Log.e("data", "networkClient error: $e")
-            return emptyList()
+            Log.e("data", "networkClient.fetch: Error fetching details: $e")
         }
     }
 
-    override suspend fun getImage(pokemon: Pokemon): PokemonWithImage {
-        imageCache[pokemon.name]?.let {
+    override fun getImage(pokemon: Pokemon): Flow<String?> = flow {
+        imageCache[pokemon.name]?.let { imageUrl ->
             Log.i("data", "networkClient: get image from cache")
-            return PokemonWithImage(pokemon.name, it)
+            emit(imageUrl)
         }
-        return try {
+        try {
             val detailsResponse: PokemonDetailsResponse = client.get(pokemon.url).body()
             val imageUrl = detailsResponse.sprites.frontDefault
-            PokemonWithImage(
-                name = pokemon.name,
-                imageUrl = imageUrl
-            )
+            emit(imageUrl)
         } catch (e: Exception) {
             Log.e("data", "networkClient.getImage: Error fetching details for ${pokemon.name}: $e")
-            PokemonWithImage(pokemon.name, null)
         }
     }
 }

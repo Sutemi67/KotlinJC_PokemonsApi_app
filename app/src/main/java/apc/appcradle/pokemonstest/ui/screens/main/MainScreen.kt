@@ -48,7 +48,7 @@ fun MainScreen(
         }
     if (state.list.isEmpty() && !state.isLoading) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("Nothing found")
+            Text("Can't find something")
         }
     } else {
         val list = state.list
@@ -101,14 +101,19 @@ private fun GreetingPreview() {
                 list = listOf(
                     PokemonWithImage(
                         name = "bulbasaur",
+                        personalDataUrl = "",
                         imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
                     ),
                     PokemonWithImage(
                         name = "ivysaur",
+                        personalDataUrl = "",
+
                         imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png"
                     ),
                     PokemonWithImage(
                         name = "venusaur",
+                        personalDataUrl = "",
+
                         imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
                     ),
                 )

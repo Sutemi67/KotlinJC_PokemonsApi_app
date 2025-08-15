@@ -25,14 +25,16 @@ class ViewModel(
     fun fetchPokemon() {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
-            val newList = localRepository.fetchPokemonList()
-            _state.update {
-                it.copy(
-                    list = newList,
-                    isLoading = false
-                )
+            val newListFlow = localRepository.fetchPokemonList()
+            newListFlow.collect { newList ->
+                _state.update {
+                    it.copy(
+                        list = newList,
+                        isLoading = false
+                    )
+                }
+                Log.d("data", "viewmodel list size: ${newList.size}")
             }
-            Log.d("data", "viewmodel list: $newList")
         }
     }
 
@@ -45,7 +47,7 @@ class ViewModel(
                     list = localRepository.getUnfilteredList()
                 )
             }
-            Log.d("data", "viewmodel list: ${state.value.list}")
+            Log.d("data", "viewmodel unfiltered list size: ${state.value.list.size}")
 
         } else {
             searchJob = viewModelScope.launch {
@@ -56,8 +58,14 @@ class ViewModel(
                         list = localRepository.filterList(searchText)
                     )
                 }
-                Log.d("data", "viewmodel list: ${state.value.list}")
+                Log.d("data", "viewmodel filtered list size: ${state.value.list.size}")
             }
         }
+    }
+
+    override fun onCleared() {
+        searchJob?.cancel()
+        searchJob = null
+        super.onCleared()
     }
 }
