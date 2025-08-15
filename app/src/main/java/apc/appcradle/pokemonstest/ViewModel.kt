@@ -37,7 +37,7 @@ class ViewModel(
             checkInternetConnectionState()
         }
     */
-
+    //region DB fetching
     fun clearDb() {
         fetchJob?.cancel()
         writeToDbJob?.cancel()
@@ -48,6 +48,11 @@ class ViewModel(
                 searchType = SearchType.Initial
             )
         }
+    }
+
+    fun onRefreshPull() {
+        clearDb()
+        fetchPokemon()
     }
 
     fun fetchPokemon() {
@@ -102,7 +107,8 @@ class ViewModel(
         }
     }
 
-
+    //endregion
+    //region FILTERS
     fun onNewSearchTextEntered(searchText: String?) {
         searchJob?.cancel()
         if (searchText.isNullOrEmpty()) {
@@ -126,11 +132,7 @@ class ViewModel(
         }
     }
 
-    fun onRefreshPull() {
-        clearDb()
-        fetchPokemon()
-    }
-
+    //endregion
     override fun onCleared() {
         searchJob?.cancel()
         searchJob = null

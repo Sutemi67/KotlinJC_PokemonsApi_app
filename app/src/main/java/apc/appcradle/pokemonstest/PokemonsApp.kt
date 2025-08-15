@@ -42,8 +42,11 @@ fun PokemonsApp(
             mainScreen(
                 state = state,
                 searchPokemons = { viewModel.fetchPokemon() },
-                onRefreshPull = { viewModel.onRefreshPull() }
+                onRefreshPull = { viewModel.onRefreshPull() },
+                //toAbilityScreen = { navController.toAbilityScreen() }
             )
+            //todo ability screen
+            //todo evolution-chain screen
         }
     }
 }

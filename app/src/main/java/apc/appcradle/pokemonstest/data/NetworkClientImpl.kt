@@ -50,7 +50,11 @@ class NetworkClientImpl() : NetworkClient {
                 Log.d("data", "NetworkClient: достигнут конец списка (total: $totalCount)")
                 return@flow
             }
-
+                /*
+                Данный слушатель потока создает класс только с данными полями, таким же образом можно
+                создать либо методы, либо уже по имеющейся информации добавить поля (например, другие картинки
+                из метода getImage()
+                 */
             response.results.forEach { pokemon ->
                 getImage(pokemon).collect { imageUrl ->
                     emit(
@@ -74,6 +78,8 @@ class NetworkClientImpl() : NetworkClient {
         }
         try {
             val detailsResponse: PokemonDetailsResponse = client.get(pokemon.url).body()
+
+            //Берем только одну картинку, можно удалить остальные поля класса, либо использовать остальные картинки.
             val imageUrl = detailsResponse.sprites.frontDefault
             emit(imageUrl)
         } catch (e: Exception) {
